@@ -1,0 +1,42 @@
+{
+    "name": "deniztezcan/omnipay-ideal",
+    "type": "library",
+    "description": "iDeal driver for the Omnipay PHP payment processing library",
+    "keywords": [
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment",
+        "iDeal",
+        "ideal"
+    ],
+    "homepage": "https://github.com/deniztezcan/omnipay-ideal",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Deniz Tezcan",
+            "email": "howdy@deniztezcan.me"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Omnipay\\iDeal\\" : "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Omnipay\\iDeal\\Tests\\": "tests/" }
+    },
+    "require": {
+        "omnipay/common": "^3"
+    },
+    "require-dev": {
+        "omnipay/tests": "^3",
+        "squizlabs/php_codesniffer": "^3",
+        "phpro/grumphp": "^0.14"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
+    },
+    "prefer-stable": true
+}
