@@ -216,7 +216,7 @@ abstract class AbstractRequest extends CommonAbstractRequest
     public function send()
     {
         $data = $this->signXML($this->getData()->asXML());
-        $httpResponse = $this->httpClient->post($this->getEndpoint(), null, $data)->send();
+        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), null, $data)->send();
         return $this->response = $this->parseResponse($this, $httpResponse->xml());
     }
     
