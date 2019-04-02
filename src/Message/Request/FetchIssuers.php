@@ -17,14 +17,17 @@ class FetchIssuers extends AbstractRequest
 
 	public function getData()
     {
-    	$data = $this->getBaseData('DirectoryReq');
-        $data->Merchant->merchantID = $this->getMerchantId();
-        $data->Merchant->subID = $this->getSubId();
+    	$data = $this->getBaseData('fetchissuers', 'message', [
+            'merchantID'    => $this->getMerchantId(),
+            'subID'         => $this->getSubId(),
+            'timestamp'     => $this->makeTimestamp(),
+        ]);
+        
         return $data;
     }
     
-    public function parseResponse(RequestInterface $request, $data){
-    	return new FetchIssuersResponse($request, $data);
+    public function createResponse($data){
+        return new FetchIssuersResponse($this, $data);
     }
 
 }

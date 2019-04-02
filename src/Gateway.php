@@ -11,6 +11,10 @@ namespace Omnipay\iDeal;
 
 use Omnipay\Common\AbstractGateway;
 
+use Omnipay\iDeal\Message\Request\FetchIssuers;
+use Omnipay\iDeal\Message\Request\Purchase;
+use Omnipay\iDeal\Message\Request\CompletePurchase;
+
 class Gateway extends AbstractGateway
 {
 
@@ -60,14 +64,14 @@ class Gateway extends AbstractGateway
         return $this->setParameter('subId', $value);
     }
 
-    public function getPublicKeyPath()
+    public function getPrivateCerPath()
     {
-        return $this->getParameter('publicKeyPath');
+        return $this->getParameter('privateCerPath');
     }
 
-    public function setPublicKeyPath($value)
+    public function setPrivateCerPath($value)
     {
-        return $this->setParameter('publicKeyPath', $value);
+        return $this->setParameter('privateCerPath', $value);
     }
 
     public function getPrivateKeyPath()
@@ -90,19 +94,69 @@ class Gateway extends AbstractGateway
         return $this->setParameter('privateKeyPassphrase', $value);
     }
 
+    public function getIssuer()
+    {
+        return $this->getParameter('issuer');
+    }
+
+    public function setIssuer($value)
+    {
+        return $this->setParameter('issuer', $value);
+    }
+
+    public function getAmount()
+    {
+        return $this->getParameter('amount');
+    }
+
+    public function setAmount($value)
+    {
+        return $this->setParameter('amount', $value);
+    }
+
+    public function getReturnUrl()
+    {
+        return $this->getParameter('returnUrl');
+    }
+
+    public function setReturnUrl($value)
+    {
+        return $this->setParameter('returnUrl', $value);
+    }
+
+    public function getTransactionId()
+    {
+        return $this->getParameter('transactionId');
+    }
+
+    public function setTransactionId($value)
+    {
+        return $this->setParameter('transactionId', $value);
+    }
+
+    public function getDescription()
+    {
+        return $this->getParameter('description');
+    }
+
+    public function setDescription($value)
+    {
+        return $this->setParameter('description', $value);
+    }
+
     public function fetchIssuers(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\iDeal\Message\Request\FetchIssuers', $parameters);
+        return $this->createRequest(FetchIssuers::class, $parameters);
     }
 
     public function purchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\iDeal\Message\Request\Purchase', $parameters);
+        return $this->createRequest(Purchase::class, $parameters);
     }
 
     public function completePurchase(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\iDeal\Message\Request\CompletePurchase', $parameters);
+        return $this->createRequest(CompletePurchase::class, $parameters);
     }
 
 }

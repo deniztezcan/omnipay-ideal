@@ -17,16 +17,19 @@ class CompletePurchase extends AbstractRequest
 
 	public function getData()
     {
-    	$this->validate('transactionId');
-        $data = $this->getBaseData('AcquirerStatusReq');
-        $data->Merchant->merchantID = $this->getMerchantId();
-        $data->Merchant->subID = $this->getSubId();
-        $data->Transaction->transactionID = $this->getTransactionId();
+    	$this->validate('transactionReference');
+        
+        $data = $this->getBaseData('status', 'message', [
+            'merchantID'            => $this->getMerchantId(),
+            'subID'                 => $this->getSubId(),
+            'transactionReference'  => $this->getTransactionReference(),
+            'timestamp'             => $this->makeTimestamp(),
+        ]);
         
         return $data;
     }
 
-    public function parseResponse(RequestInterface $request, $data){
-    	return new CompletePurchaseResponse($request, $data);
+    public function createResponse($data){
+        return new CompletePurchaseResponse($this, $data);
     }
 }

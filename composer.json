@@ -11,6 +11,7 @@
         "iDeal",
         "ideal"
     ],
+    "version": "1.0.0",
     "homepage": "https://github.com/deniztezcan/omnipay-ideal",
     "license": "MIT",
     "authors": [
@@ -26,12 +27,12 @@
         "psr-4": { "Omnipay\\iDeal\\Tests\\": "tests/" }
     },
     "require": {
-        "omnipay/common": "^3"
+        "omnipay/common": "^3",
+        "spatie/array-to-xml": "2.8.*",
+        "nesbot/carbon": "2.16.*",
     },
     "require-dev": {
         "omnipay/tests": "^3",
-        "squizlabs/php_codesniffer": "^3",
-        "phpro/grumphp": "^0.14"
     },
     "prefer-stable": true
 }

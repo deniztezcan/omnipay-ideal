@@ -9,10 +9,9 @@
 
 namespace Omnipay\iDeal\Message\Request;
 
-use DOMDocument;
-use DOMNode;
-use DOMXPath;
-use SimpleXMLElement;
+use Carbon\Carbon;
+use Spatie\ArrayToXml\ArrayToXml;
+use Omnipay\iDeal\XmlToArray;
 use Omnipay\Common\Exception\InvalidRequestException;
 use Exception;
 
@@ -21,13 +20,7 @@ use Omnipay\Common\Message\AbstractRequest as CommonAbstractRequest;
 abstract class AbstractRequest extends CommonAbstractRequest
 {	
 
-	const LANGUAGE = 'nl';
-    const EXPIRATION_PERIOD = 'PT10M';
-    const IDEAL_VERSION = '3.3.1';
-    const IDEAL_NS = 'http://www.idealdesk.com/ideal/messages/mer-acq/3.3.1';
-    const XMLDSIG_NS = 'http://www.w3.org/2000/09/xmldsig#';
-
-     public function getAcquirer()
+	public function getAcquirer()
     {
         return $this->getParameter('acquirer');
     }
@@ -57,14 +50,14 @@ abstract class AbstractRequest extends CommonAbstractRequest
         return $this->setParameter('subId', $value);
     }
 
-    public function getPublicKeyPath()
+     public function getPrivateCerPath()
     {
-        return $this->getParameter('publicKeyPath');
+        return $this->getParameter('privateCerPath');
     }
 
-    public function setPublicKeyPath($value)
+    public function setPrivateCerPath($value)
     {
-        return $this->setParameter('publicKeyPath', $value);
+        return $this->setParameter('privateCerPath', $value);
     }
 
     public function getPrivateKeyPath()
@@ -97,134 +90,95 @@ abstract class AbstractRequest extends CommonAbstractRequest
         return $this->setParameter('issuer', $value);
     }
 
-    protected function getBaseData($action)
-    {
-        $this->validate('acquirer', 'testMode', 'merchantId', 'subId', 'publicKeyPath', 'privateKeyPath', 'privateKeyPassphrase');
-        
-        $data = new SimpleXMLElement("<?xml version='1.0' encoding='UTF-8'?><$action />");
-        $data->addAttribute('xmlns', static::IDEAL_NS);
-        $data->addAttribute('version', static::IDEAL_VERSION);
-        $data->createDateTimestamp = gmdate('Y-m-d\TH:i:s.000\Z');
-        return $data;
+    public function getTransactionReference(){
+        return $this->getParameter('transactionReference');
     }
 
-    public function signXML($data)
+    public function setTransactionReference($value){
+        return $this->setParameter('transactionReference', $value);
+    }
+
+    public function getDigest($xml)
     {
-        $xml = new DOMDocument;
-        $xml->preserveWhiteSpace = false;
-        $xml->loadXML($data);
-        $sig = new DOMDocument;
-        $sig->preserveWhiteSpace = false;
-        $sig->loadXML(
-            '<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-                <SignedInfo>
-                    <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-                    <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-                    <Reference URI="">
-                        <Transforms>
-                            <Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/>
-                        </Transforms>
-                        <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                        <DigestValue/>
-                    </Reference>
-                </SignedInfo>
-                <SignatureValue/>
-                <KeyInfo><KeyName/></KeyInfo>
-            </Signature>'
+        return base64_encode(openssl_digest($xml, 'sha256', true));
+    }
+
+    protected function makeTimestamp()
+    {
+        return Carbon::now()->format('Y-m-d\TH:i:s.000\Z');
+    }
+
+   public function getSignature($xml)
+    {
+        $privatekey = file_get_contents($this->getPrivateKeyPath());
+
+        $key = openssl_get_publickey($privatekey);
+        if (!empty($this->getPrivateKeyPassphrase())) {
+            $key = openssl_get_privatekey($privatekey, $this->getPrivateKeyPassphrase());
+        }
+
+        if(false === $key){
+            throw new Exception(openssl_error_string());
+        }
+
+        openssl_sign($xml, $signature, $key, OPENSSL_ALGO_SHA256);
+        openssl_free_key($key);
+        return base64_encode($signature);
+    }
+    
+    public function getFingerPrint()
+    {
+        return strtoupper(sha1(base64_decode(str_replace(['-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----'], '', file_get_contents($this->getPrivateCerPath())))));
+    }
+
+    public function buildMessageOptions($type, $config)
+    {
+        $config['digest'] = $this->getDigest($this->generateXml($type, 'digest', $config));
+        $config['signature'] = $this->getSignature($this->generateXml($type, 'signature', $config));
+        $config['fingerprint'] = $this->getFingerPrint();
+
+        return $config;
+    }
+
+    public function generateXml($type, $name, $config)
+    {
+        if($name === "message") {
+            $config = $this->buildMessageOptions($type, $config);
+        }
+
+        $data = include(__DIR__ . "/../../Support/{$type}/{$name}.php");
+
+        $xml = ArrayToXml::convert($data, '');
+        $xml = str_replace(['    ', '<root>', '</root>', "\n", "\r", '<remove>remove</remove>'], '', $xml);
+        if ($name !== "message") {
+            $xml = str_replace('<?xml version="1.0"?>', '', $xml);
+        }
+        
+        return $xml;
+    }
+
+    public function getBaseData($type, $name, $config)
+    {
+        $this->validate('acquirer', 'testMode', 'merchantId', 'subId', 'privateCerPath', 'privateKeyPath', 'privateKeyPassphrase');
+        $data = $this->generateXml($type, $name, $config);
+        return $data;
+    }
+    
+    public function sendData($data)
+    {  
+        $response = $this->httpClient->request(
+            'POST',
+            $this->getEndpoint(),
+            [
+                'Content-Type' => 'application/json'
+            ],
+            $data
         );
-        $sig = $xml->importNode($sig->documentElement, true);
-        $xml->documentElement->appendChild($sig);
-        // calculate digest
-        $xpath = $this->getXPath($xml);
-        $digestValue = $xpath->query('ds:Signature/ds:SignedInfo/ds:Reference/ds:DigestValue')->item(0);
-        $digestValue->nodeValue = $this->generateDigest($xml);
-        // calculate signature
-        $signedInfo = $xpath->query('ds:Signature/ds:SignedInfo')->item(0);
-        $signatureValue = $xpath->query('ds:Signature/ds:SignatureValue')->item(0);
-        $signatureValue->nodeValue = $this->generateSignature($signedInfo);
-        // add key reference
-        $keyName = $xpath->query('ds:Signature/ds:KeyInfo/ds:KeyName')->item(0);
-        $keyName->nodeValue = $this->getPublicKeyDigest();
-        return $xml->saveXML();
+
+        return $this->createResponse(XmlToArray::convert($response->getBody()->getContents()));
     }
-    
-    /**
-     * Generate sha256 digest of xml
-     *
-     * @param DOMNode
-     * @return string
-     */
-    public function generateDigest(DOMDocument $xml)
-    {
-        $xml = $xml->cloneNode(true);
-        // strip Signature
-        foreach ($this->getXPath($xml)->query('ds:Signature') as $node) {
-            $node->parentNode->removeChild($node);
-        }
-        $message = $this->c14n($xml);
-        return base64_encode(hash('sha256', $message, true));
-    }
-    
-    /**
-     * Generate RSA signature of SignedInfo element
-     *
-     * @param DOMNode
-     * @return string
-     */
-    public function generateSignature(DOMNode $xml)
-    {
-        $message = $this->c14n($xml);
-        $key = openssl_get_privatekey('file://'.$this->getPrivateKeyPath(), $this->getPrivateKeyPassphrase());
-        if ($key && openssl_sign($message, $signature, $key, OPENSSL_ALGO_SHA256)) {
-            openssl_free_key($key);
-            return base64_encode($signature);
-        }
-        $error = 'Invalid private key.';
-        while ($msg = openssl_error_string()) {
-            $error .= ' '.$msg;
-        }
-        throw new InvalidRequestException($error);
-    }
-    
-    /**
-     * Exclusive XML canonicalization
-     *
-     * @link http://www.w3.org/2001/10/xml-exc-c14n
-     */
-    protected function c14n(DOMNode $xml)
-    {
-        return $xml->C14N(true, false);
-    }
-    
-    protected function getXPath(DOMDocument $xml)
-    {
-        $xpath = new DOMXPath($xml);
-        $xpath->registerNamespace('ds', static::XMLDSIG_NS);
-        $xpath->registerNamespace('ideal', static::IDEAL_NS);
-        return $xpath;
-    }
-    
-    public function getPublicKeyDigest()
-    {
-        if (openssl_x509_export('file://'.$this->getPublicKeyPath(), $cert)) {
-            $cert = str_replace(array('-----BEGIN CERTIFICATE-----', '-----END CERTIFICATE-----'), '', $cert);
-            return strtoupper(sha1(base64_decode($cert)));
-        }
-        throw new InvalidRequestException("Invalid public key");
-    }
-    
-    public function send()
-    {
-        $data = $this->signXML($this->getData()->asXML());
-        $httpResponse = $this->httpClient->request('POST', $this->getEndpoint(), null, $data)->send();
-        return $this->response = $this->parseResponse($this, $httpResponse->xml());
-    }
-    
-    public function sendData($data){
-        throw new Exception('This method is not implemented.');
-    }
-    
-    public abstract function parseResponse(\Omnipay\Common\Message\RequestInterface $request, $data);
+
+    abstract public function createResponse($payload);
     
     public function getEndpoint()
     {

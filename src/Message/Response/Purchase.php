@@ -9,42 +9,49 @@
 
 namespace Omnipay\iDeal\Message\Response;
 
-class Purchase extends AbstractResponse
+use Omnipay\Common\Message\RedirectResponseInterface; 
+
+class Purchase extends AbstractResponse implements RedirectResponseInterface
 {
 
+	public function isRedirect()
+	{
+		return $this->isSuccessful();
+	}
+
 	public function rootElementExists(){
-        return isset($this->data->Transaction) && isset($this->data->Issuer);
+		return isset($this->data['Transaction']) && isset($this->data['Issuer']);
     }
     
     public function getIssuer() {
-		return $this->data->Issuer;
+		return $this->data['Issuer'];
 	}
 	
 	public function getTransaction(){
-		return $this->data->Transaction;
+		return $this->data['Transaction'];
 	}
 	
-	public function getIssuerAuthenticationURL() {
-		if (isset($this->data->Issuer)) {
-			return (string)$this->data->Issuer->issuerAuthenticationURL;
+	public function getRedirectUrl() {
+		if (isset($this->data['Issuer'])) {
+			return (string)$this->data['Issuer']['issuerAuthenticationURL'];
 		}
 	}
 	
 	public function getTransactionID(){
-		if (isset($this->data->Transaction)) {
-			return (string)$this->data->Transaction->transactionID;
+		if (isset($this->data['Transaction'])) {
+			return (string)$this->data['Transaction']['transactionID'];
 		}
 	}
 	
 	public function getTransactionCreateDateTimestamp() {
-		if (isset($this->data->Transaction)) {
-			return (string)$this->data->Transaction->transactionCreateDateTimestamp;
+		if (isset($this->data['Transaction'])) {
+			return (string)$this->data['Transaction']['transactionCreateDateTimestamp'];
 		}
 	}
 	
 	public function getPurchaseID() {
-		if (isset($this->data->Transaction)) {
-			return (string)$this->data->Transaction->purchaseID;
+		if (isset($this->data['Transaction'])) {
+			return (string)$this->data['Transaction']['purchaseID'];
 		}
 	}
 

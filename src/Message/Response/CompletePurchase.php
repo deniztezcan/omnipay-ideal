@@ -13,58 +13,58 @@ class CompletePurchase extends AbstractResponse
 {
 
 	public function rootElementExists(){
-        return isset($this->data->Transaction);
+        return isset($this->data['Transaction']);
     }
     
     public function getTransaction(){
-            return $this->data->Transaction;
+            return $this->data['Transaction'];
     }
     
     public function getTransactionID(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->transactionID;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['transactionID'];
         }
     }
     
     public function getStatus(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->status;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['status'];
         }
     }
     
     public function getStatusDateTimestamp(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->statusDateTimestamp;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['statusDateTimestamp'];
         }
     }
     
     public function getConsumerName(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->consumerName;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['consumerName'];
         }
     }
     
     public function getConsumerIBAN(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->consumerIBAN;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['consumerIBAN'];
         }
     }
     
     public function getConsumerBIC(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->consumerBIC;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['consumerBIC'];
         }
     }
     
     public function getAmount(){
-        if (isset($this->data->Transaction)) {
-            return (float)$this->data->Transaction->amount;
+        if (isset($this->data['Transaction'])) {
+            return (float)$this->data['Transaction']['amount'];
         }
     }
     
     public function getCurrency(){
-        if (isset($this->data->Transaction)) {
-            return (string)$this->data->Transaction->currency;
+        if (isset($this->data['Transaction'])) {
+            return (string)$this->data['Transaction']['currency'];
         }
     }
 }

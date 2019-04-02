@@ -3,7 +3,7 @@
  * Purchase | src/Message/Request/Purchase.php.
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
- * @package		Omnipay-iDeal
+ * @package     Omnipay-iDeal
  * @since       v0.1
  */
 
@@ -15,28 +15,31 @@ use Omnipay\Common\Message\RequestInterface;
 class Purchase extends AbstractRequest
 {
 
-	public function getData()
+    public function getData()
     {
+        
         $this->validate('issuer', 'amount', 'currency', 'returnUrl');
         
-        $data = $this->getBaseData('AcquirerTrxReq');
-        $data->Issuer->issuerID = $this->getIssuer();
-        $data->Merchant->merchantID = $this->getMerchantId();
-        $data->Merchant->subID = $this->getSubId();
-        $data->Merchant->merchantReturnURL = $this->getReturnUrl();
-        $data->Transaction->purchaseID = $this->getTransactionId();
-        $data->Transaction->amount = $this->getAmount();
-        $data->Transaction->currency = $this->getCurrency();
-        $data->Transaction->expirationPeriod = static::EXPIRATION_PERIOD;
-        $data->Transaction->language = static::LANGUAGE;
-        $data->Transaction->description = $this->getDescription();
-        $data->Transaction->entranceCode = sha1(uniqid());
-        
+        $data = $this->getBaseData('transaction', 'message', [
+            'issuerID'          => $this->getIssuer(),
+            'merchantID'        => $this->getMerchantId(),
+            'subID'             => $this->getSubId(),
+            'merchantReturnURL' => $this->getReturnUrl(),
+            'purchaseID'        => $this->getTransactionId(),
+            'amount'            => $this->getAmount(),
+            'currency'          => $this->getCurrency(),
+            'expiration_period' => 'PT1H',
+            'locale'            => 'nl',
+            'description'       => $this->getDescription(),
+            'entrance_code'     => sha1(uniqid()),
+            'timestamp'         => $this->makeTimestamp(),
+        ]);
+
         return $data;
     }
     
-    public function parseResponse(RequestInterface $request, $data){
-        return new PurchaseResponse($request, $data);
+    public function createResponse($data){
+        return new PurchaseResponse($this, $data);
     }
 
 }
