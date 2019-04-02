@@ -1,6 +1,6 @@
 # Omnipay: iDeal
 
-**iDeal driver for the Omnipay PHP payment processing library**
+**iDeal (PSP) driver for the Omnipay PHP payment processing library**
 
 [![Latest Stable Version](https://poser.pugx.org/deniztezcan/omnipay-ideal/v/stable)](https://packagist.org/packages/deniztezcan/omnipay-ideal) 
 [![Total Downloads](https://poser.pugx.org/deniztezcan/omnipay-ideal/downloads)](https://packagist.org/packages/deniztezcan/omnipay-ideal) 
