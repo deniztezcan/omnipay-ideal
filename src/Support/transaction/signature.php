@@ -3,6 +3,7 @@
  * Signature | src/Support/transaction/signature.php.
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
+ * @author      Björn Visser
  * @package     Omnipay-iDeal
  * @since       v0.1
  */
