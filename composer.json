@@ -27,7 +27,7 @@
         "psr-4": { "Omnipay\\iDeal\\Tests\\": "tests/" }
     },
     "require": {
-        "omnipay/common": "^3",
+        "league/omnipay": "^3",
         "spatie/array-to-xml": "2.8.*",
         "nesbot/carbon": "2.16.*"
     },
