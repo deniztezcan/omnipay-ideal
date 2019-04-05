@@ -22,7 +22,7 @@ Table of Contents
 Omnipay is installed via [Composer](http://getcomposer.org/).
 
 ```
-composer require deniztezcan/omnipay-ideal
+composer require deniztezcan/omnipay-ideal:^1
 ```
 
 ## List iDeal Issuers
