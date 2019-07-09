@@ -191,6 +191,8 @@ abstract class AbstractRequest extends CommonAbstractRequest
                 return $base.'secure-ing.com/ideal/iDEALv3';
             case 'rabobank':
                 return $base.'rabobank.nl/ideal/iDEALv3';
+            case 'bnpparibas':
+                return $base.'bnpparibas.com/ideal/iDEALv3';
             case 'simulator':
                 return 'https://www.ideal-checkout.nl:443/simulator/';
         }
