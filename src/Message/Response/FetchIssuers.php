@@ -23,14 +23,11 @@ class FetchIssuers extends AbstractResponse
     public function getIssuers() {
         if (isset($this->data['Directory'])) {
             $issuers = array();
-            foreach ($this->data['Directory']['Country'] as $country) {
-                foreach ($country['Issuer'] as $issuer) {
-                    $id = (string) $issuer->issuerID;
-                    $issuers[(string)$country->countryNames][$id] = (string) $issuer->issuerName;
-                }
+            foreach ($this->data['Directory']['Country']['Issuer'] as $issuer) {
+                $id = (string) $issuer['issuerID'];
+                $issuers[$id] = (string) $issuer['issuerName'];
             }
             return $issuers;
         }
     }
-
 }
