@@ -3,7 +3,7 @@
  * XmlToArray | src/XmlToArray.php.
  *
  * @author      Björn Visser
- * @package		Omnipay-iDeal
+ *
  * @since       v0.1
  */
 
@@ -13,9 +13,10 @@ class XmlToArray
 {
     public static function convert($xml)
     {
-        $xml = simplexml_load_string($xml, "SimpleXMLElement", LIBXML_NOCDATA);
+        $xml = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
         $json = json_encode($xml);
-        $data = json_decode($json,TRUE);
+        $data = json_decode($json, true);
+
         return $data;
     }
 }

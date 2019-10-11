@@ -4,7 +4,7 @@
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
  * @author      Björn Visser
- * @package     Omnipay-iDeal
+ *
  * @since       v0.1
  */
 
@@ -45,5 +45,5 @@ return [
             ],
             'DigestValue' => $config['digest'],
         ],
-    ]
+    ],
 ];
