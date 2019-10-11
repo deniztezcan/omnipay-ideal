@@ -3,34 +3,33 @@
  * Gateway | src/Gateway.php.
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
- * @package		Omnipay-iDeal
+ *
  * @since       v0.1
  */
 
 namespace Omnipay\iDeal;
 
 use Omnipay\Common\AbstractGateway;
-
+use Omnipay\iDeal\Message\Request\CompletePurchase;
 use Omnipay\iDeal\Message\Request\FetchIssuers;
 use Omnipay\iDeal\Message\Request\Purchase;
-use Omnipay\iDeal\Message\Request\CompletePurchase;
 
 class Gateway extends AbstractGateway
 {
-
-	public function getName() {
+    public function getName()
+    {
         return 'iDeal';
     }
 
-	public function getDefaultParameters()
+    public function getDefaultParameters()
     {
         return [
-            'acquirer' => array('', 'simulator', 'ing', 'rabobank'),
-            'merchantId' => '',
-            'publicKeyPath' => '',
-            'privateKeyPath' => '',
+            'acquirer'             => ['', 'simulator', 'ing', 'rabobank'],
+            'merchantId'           => '',
+            'publicKeyPath'        => '',
+            'privateKeyPath'       => '',
             'privateKeyPassphrase' => '',
-            'testMode' => false,
+            'testMode'             => false,
         ];
     }
 
@@ -144,19 +143,18 @@ class Gateway extends AbstractGateway
         return $this->setParameter('description', $value);
     }
 
-    public function fetchIssuers(array $parameters = array())
+    public function fetchIssuers(array $parameters = [])
     {
         return $this->createRequest(FetchIssuers::class, $parameters);
     }
 
-    public function purchase(array $parameters = array())
+    public function purchase(array $parameters = [])
     {
         return $this->createRequest(Purchase::class, $parameters);
     }
 
-    public function completePurchase(array $parameters = array())
+    public function completePurchase(array $parameters = [])
     {
         return $this->createRequest(CompletePurchase::class, $parameters);
     }
-
 }

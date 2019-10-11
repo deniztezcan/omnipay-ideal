@@ -3,23 +3,20 @@
  * Purchase | src/Message/Request/Purchase.php.
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
- * @package     Omnipay-iDeal
+ *
  * @since       v0.1
  */
 
 namespace Omnipay\iDeal\Message\Request;
 
 use Omnipay\iDeal\Message\Response\Purchase as PurchaseResponse;
-use Omnipay\Common\Message\RequestInterface;
 
 class Purchase extends AbstractRequest
 {
-
     public function getData()
     {
-        
         $this->validate('issuer', 'amount', 'currency', 'returnUrl');
-        
+
         $data = $this->getBaseData('transaction', 'message', [
             'issuerID'          => $this->getIssuer(),
             'merchantID'        => $this->getMerchantId(),
@@ -37,9 +34,9 @@ class Purchase extends AbstractRequest
 
         return $data;
     }
-    
-    public function createResponse($data){
+
+    public function createResponse($data)
+    {
         return new PurchaseResponse($this, $data);
     }
-
 }

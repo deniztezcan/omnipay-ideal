@@ -4,20 +4,20 @@
  *
  * @author      Deniz Tezcan <howdy@deniztezcan.me>
  * @author      Björn Visser
- * @package     Omnipay-iDeal
+ *
  * @since       v0.1
  */
 
 return [
     'AcquirerStatusReq' => [
         '_attributes' => [
-            'xmlns' => 'http://www.idealdesk.com/ideal/messages/mer-acq/3.3.1',
+            'xmlns'   => 'http://www.idealdesk.com/ideal/messages/mer-acq/3.3.1',
             'version' => '3.3.1',
         ],
         'createDateTimestamp' => $config['timestamp'],
-        'Merchant' => [
+        'Merchant'            => [
             'merchantID' => $config['merchantID'],
-            'subID' => $config['subID'],
+            'subID'      => $config['subID'],
         ],
         'Transaction' => [
             'transactionID' => $config['transactionReference'],
@@ -57,7 +57,7 @@ return [
                 ],
             ],
             'SignatureValue' => $config['signature'],
-            'KeyInfo' => [
+            'KeyInfo'        => [
                 'KeyName' => $config['fingerprint'],
             ],
         ],
