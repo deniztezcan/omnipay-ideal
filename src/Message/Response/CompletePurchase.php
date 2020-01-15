@@ -11,6 +11,11 @@ namespace Omnipay\iDeal\Message\Response;
 
 class CompletePurchase extends AbstractResponse
 {
+    public function getRawXmlAsString(): string
+    {
+        return $this->data['raw'] ?? '';
+    }
+
     public function rootElementExists()
     {
         return isset($this->data['Transaction']);
