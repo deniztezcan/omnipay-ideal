@@ -187,9 +187,9 @@ abstract class AbstractRequest extends CommonAbstractRequest
             $data
         );
 
-        $response = XmlToArray::convert($response->getBody()->getContents());
-        $response['raw'] = $response->getBody()->getContents();
-        return $this->createResponse($response);
+        $rawResponse = XmlToArray::convert($response->getBody()->getContents());
+        $rawResponse['raw'] = $response->getBody()->getContents();
+        return $this->createResponse($rawResponse);
     }
 
     abstract public function createResponse($payload);
