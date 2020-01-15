@@ -1,5 +1,5 @@
 {
-    "name": "deniztezcan/omnipay-ideal",
+    "name": "futurum/omnipay-ideal",
     "type": "library",
     "description": "iDeal driver for the Omnipay PHP payment processing library",
     "keywords": [
@@ -29,7 +29,8 @@
     "require": {
         "league/omnipay": "^3",
         "spatie/array-to-xml": "2.8.*",
-        "nesbot/carbon": "2.*"
+        "nesbot/carbon": "2.*",
+        "ext-openssl": "*"
     },
     "require-dev": {
         "omnipay/tests": "^3"
