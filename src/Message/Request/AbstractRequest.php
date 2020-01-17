@@ -43,6 +43,16 @@ abstract class AbstractRequest extends CommonAbstractRequest
         return $this->getParameter('subId');
     }
 
+    public function getExpirationPeriod()
+    {
+        return $this->getParameter('expirationPeriod') ?? 'PT1H';
+    }
+
+    public function getLocale()
+    {
+        return $this->getParameter('locale') ?? 'nl';
+    }
+
     public function setSubId($value)
     {
         return $this->setParameter('subId', $value);
@@ -114,7 +124,7 @@ abstract class AbstractRequest extends CommonAbstractRequest
 
         $key = openssl_get_publickey($privatekey);
         if (!empty($this->getPrivateKeyPassphrase())) {
-            $key = openssl_get_privatekey($privatekey, $this->getPrivateKeyPassphrase());
+            $key = openssl_pkey_get_private($privatekey, $this->getPrivateKeyPassphrase());
         }
 
         if (false === $key) {
@@ -177,7 +187,11 @@ abstract class AbstractRequest extends CommonAbstractRequest
             $data
         );
 
-        return $this->createResponse(XmlToArray::convert($response->getBody()->getContents()));
+        $content = $response->getBody()->getContents();
+
+        $rawResponse = XmlToArray::convert($content);
+        $rawResponse['raw'] = $content;
+        return $this->createResponse($rawResponse);
     }
 
     abstract public function createResponse($payload);

@@ -25,7 +25,7 @@ return [
         ],
         'Transaction' => [
             'purchaseID'       => $config['purchaseID'],
-            'amount'           => number_format($config['amount'], 2),
+            'amount'           => number_format($config['amount'], 2, '.', ''),
             'currency'         => $config['currency'],
             'expirationPeriod' => $config['expiration_period'],
             'language'         => $config['locale'],
