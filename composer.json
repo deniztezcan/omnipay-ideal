@@ -1,5 +1,5 @@
 {
-    "name": "futurum/omnipay-ideal",
+    "name": "deniztezcan/omnipay-ideal",
     "type": "library",
     "description": "iDeal driver for the Omnipay PHP payment processing library",
     "keywords": [
