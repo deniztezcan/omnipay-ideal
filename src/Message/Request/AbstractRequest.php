@@ -205,6 +205,9 @@ abstract class AbstractRequest extends CommonAbstractRequest
         switch ($this->getAcquirer()) {
             case 'ing':
                 return $base.'secure-ing.com/ideal/iDEALv3';
+            case 'abn':
+                $base = $this->getTestMode() ? '-test' : '';
+                return 'https://abnamro' . $base . '.ideal-payment.de/ideal/iDEALv3';
             case 'rabobank':
                 return $base.'rabobank.nl/ideal/iDEALv3';
             case 'bnpparibas':
