@@ -24,7 +24,7 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return [
-            'acquirer'             => ['', 'simulator', 'ing', 'rabobank', 'abn'],
+            'acquirer'             => ['', 'simulator', 'ing', 'rabobank', 'abn', 'deutsche'],
             'merchantId'           => '',
             'publicKeyPath'        => '',
             'privateKeyPath'       => '',
