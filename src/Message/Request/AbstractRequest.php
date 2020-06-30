@@ -216,6 +216,12 @@ abstract class AbstractRequest extends CommonAbstractRequest
                 return $base.'bnpparibas.com/ideal/iDEALv3';
             case 'simulator':
                 return 'https://www.ideal-checkout.nl:443/simulator/';
+            case 'banknederlandsegemeenten':
+                if ($this->getTestMode()) {
+                    return "https://erouting-int.equensworldline.com/bvn-idx-ideal-rs/iDEALv3";
+                } else {
+                    return "https://erouting.equensworldline.com/bvn-idx-ideal-rs/iDEALv3​";
+                }
         }
 
         throw new InvalidRequestException('Invalid acquirer selected');
