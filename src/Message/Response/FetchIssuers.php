@@ -25,13 +25,13 @@ class FetchIssuers extends AbstractResponse
     {
         if (isset($this->data['Directory'])) {
             $issuers = [];
-            if (is_array($this->data['Directory']['Country'])) {
+            if (isset($this->data['Directory']['Country']['Issuer'])) {
+                $issuerList = $this->data['Directory']['Country']['Issuer'];
+            } else {
                 // TODO: add option to filter by country
                 $issuerList = current(array_filter($this->data['Directory']['Country'], function($country) {
                     return $country['countryNames'] === 'Nederland';
                 }))['Issuer'];
-            } else {
-                $issuerList = $this->data['Directory']['Country']['Issuer'];
             }
             foreach ($issuerList as $issuer) {
                 $id = (string) $issuer['issuerID'];
