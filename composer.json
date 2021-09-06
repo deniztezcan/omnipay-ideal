@@ -32,7 +32,7 @@
         "ext-openssl": "*"
     },
     "require-dev": {
-        "omnipay/tests": "^3"
+        "omnipay/tests": "^4"
     },
     "prefer-stable": true
 }
