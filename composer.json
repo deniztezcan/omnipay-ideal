@@ -11,7 +11,7 @@
         "iDeal",
         "ideal"
     ],
-    "version": "1.4.2",
+    "version": "1.5",
     "homepage": "https://github.com/deniztezcan/omnipay-ideal",
     "license": "MIT",
     "authors": [
@@ -28,7 +28,7 @@
     },
     "require": {
         "league/omnipay": "^3",
-        "spatie/array-to-xml": "2.8.*",
+        "spatie/array-to-xml": "^3",
         "nesbot/carbon": "2.*",
         "ext-openssl": "*"
     },
