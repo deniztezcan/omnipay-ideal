@@ -132,7 +132,10 @@ abstract class AbstractRequest extends CommonAbstractRequest
         }
 
         openssl_sign($xml, $signature, $key, OPENSSL_ALGO_SHA256);
-        openssl_free_key($key);
+
+        if (\PHP_VERSION_ID < 80000) {
+            openssl_free_key($key);
+        }
 
         return base64_encode($signature);
     }
