@@ -11,12 +11,13 @@
         "iDeal",
         "ideal"
     ],
+    "version": "1.5",
     "homepage": "https://github.com/deniztezcan/omnipay-ideal",
     "license": "MIT",
     "authors": [
         {
             "name": "Deniz Tezcan",
-            "email": "howdy@deniztezcan.me"
+            "email": "deniz@tezcanit.solutions"
         }
     ],
     "autoload": {
